@@ -1,34 +1,108 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image.prod.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
     <style>
-      body { margin: 0; overflow: hidden; }
+      body { margin: 0; overflow: hidden; font-family: sans-serif; }
+      
+      /* Екран привітання для обходу блокування автоплею */
+      #startButton {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle, #2e2e2e 0%, #000000 100%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        cursor: pointer;
+        text-align: center;
+      }
+      .btn {
+        padding: 15px 30px;
+        background: #fff;
+        color: #000;
+        border-radius: 50px;
+        font-weight: bold;
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
     </style>
   </head>
   <body>
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    
+    <div id="startButton">
+        <h1 style="margin:0;">✨ AR-МАГІЯ ✨</h1>
+        <p style="opacity: 0.8;">Натисни кнопку, щоб активувати камеру</p>
+        <div class="btn">Активувати</div>
+    </div>
+
+    <a-scene 
+      mindar-image="imageTargetSrc: ./targets.mind; uiScanning: #scanning-overlay;" 
+      color-space="sRGB" 
+      renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
       <a-assets>
-        <video id="ar-video" src="./Що робити коли інженер з охорони праці зник_ #охоронапраці.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+        <video 
+          id="ar-video" 
+          src="./ingenerznyk.mp4" 
+          preload="auto" 
+          loop="true" 
+          crossorigin="anonymous" 
+          playsinline 
+          webkit-playsinline>
+        </video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#ar-video" width="1" height="1.8" position="0 0 0" rotation="0 0 0"></a-video>
+        <a-video 
+          src="#ar-video" 
+          width="1" 
+          height="1.8" 
+          position="0 0 0" 
+          rotation="0 0 0">
+        </a-video>
       </a-entity>
     </a-scene>
 
     <script>
-      // Скрипт для автоматичного запуску відео, коли картинку знайдено
-      const video = document.querySelector('#ar-video');
+      const startButton = document.getElementById('startButton');
+      const video = document.getElementById('ar-video');
       const scene = document.querySelector('a-scene');
+
+      // Логіка старту після кліку
+      startButton.addEventListener('click', () => {
+        // Спроба запустити відео (користувач дав дозвіл кліком)
+        video.play().then(() => {
+          video.pause(); // Ставимо на паузу, поки не знайдено маркер
+          startButton.style.display = 'none';
+        }).catch(err => {
+          console.log("Помилка автоплею, пробуємо без звуку");
+          video.muted = true;
+          video.play();
+          startButton.style.display = 'none';
+        });
+      });
+
+      // Коли картинку знайдено — вмикаємо відео
       scene.addEventListener('targetFound', event => {
+        console.log("Знайдено маркер!");
         video.play();
       });
+
+      // Коли камеру відвели — ставимо на паузу (економить ресурс телефону)
       scene.addEventListener('targetLost', event => {
+        console.log("Маркер втрачено.");
         video.pause();
       });
     </script>
