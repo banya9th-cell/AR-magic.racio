@@ -6,38 +6,22 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; font-family: sans-serif; }
+        body { margin: 0; overflow: hidden; }
         #startButton {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #2e2e2e 0%, #000000 100%);
-            color: white; display: flex; flex-direction: column;
+            background: #000; color: #fff; display: flex; 
             justify-content: center; align-items: center;
             z-index: 9999; cursor: pointer; text-align: center;
-        }
-        .btn {
-            padding: 15px 30px; background: #fff; color: #000;
-            border-radius: 50px; font-weight: bold; margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div id="startButton">
-        <h1>✨ МАГІЯ ГОТОВА ✨</h1>
-        <p>Натисни кнопку та наводи на картинку</p>
-        <div class="btn">ЗАПУСТИТИ</div>
-    </div>
+    <div id="startButton"><h1>Тисни сюди і наводь камеру</h1></div>
 
-    <a-scene 
-        mindar-image="imageTargetSrc: https://banya9th-cell.github.io/AR-magic.racio/targets.mind;" 
-        color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
-        vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-        
+    <a-scene mindar-image="imageTargetSrc: https://banya9th-cell.github.io/AR-magic.racio/targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
         <a-assets>
-            <video id="ar-video" 
-                   src="https://banya9th-cell.github.io/AR-magic.racio/ingenerznyk.mp4" 
-                   preload="auto" loop="true" crossorigin="anonymous" 
-                   playsinline webkit-playsinline>
-            </video>
+            <video id="ar-video" src="https://banya9th-cell.github.io/AR-magic.racio/ingenerznyk.mp4" 
+                preload="auto" loop="true" crossorigin="anonymous" playsinline webkit-playsinline muted></video>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -50,22 +34,10 @@
     <script>
         const startButton = document.getElementById('startButton');
         const video = document.getElementById('ar-video');
-        const scene = document.querySelector('a-scene');
-
         startButton.addEventListener('click', () => {
-            // Запускаємо і відразу на паузу, щоб отримати дозвіл браузера
-            video.play().then(() => {
-                video.pause();
-                startButton.style.display = 'none';
-            }).catch(() => {
-                video.muted = true; // Якщо не пускає зі звуком
-                video.play();
-                startButton.style.display = 'none';
-            });
+            video.play(); // Запускаємо відео
+            startButton.style.display = 'none';
         });
-
-        scene.addEventListener('targetFound', () => { video.play(); });
-        scene.addEventListener('targetLost', () => { video.pause(); });
     </script>
 </body>
 </html>
