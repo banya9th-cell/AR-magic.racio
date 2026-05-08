@@ -8,29 +8,43 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <div id="overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; cursor: pointer; text-align: center; font-family: sans-serif;">
-        <h1>✨ МАГІЯ ГОТОВА ✨</h1>
-        <p>Натисни для звуку та наводь камеру</p>
+        <h1>📽️ YouTube AR 📽️</h1>
+        <p>Натисни, щоб активувати камеру</p>
     </div>
 
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;" 
+             color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false"
+             cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+        
         <a-assets>
-            <video id="ar-video" src="./ingenerznyk.mp4" preload="auto" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+            <img id="yt-icon" src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" />
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0">
-            <a-video src="#ar-video" width="1" height="1.78" position="0 0 0"></a-video>
+            <a-image src="#yt-icon" 
+                     class="clickable" 
+                     width="1" height="0.4" 
+                     position="0 0 0.1" 
+                     id="youtube-button"></a-image>
+            
+            <a-text value="WATCH ON YOUTUBE" color="white" align="center" position="0 -0.3 0.1" scale="0.4 0.4 0.4"></a-text>
         </a-entity>
     </a-scene>
 
     <script>
         const overlay = document.getElementById('overlay');
-        const video = document.getElementById('ar-video');
+        const ytButton = document.getElementById('youtube-button');
+
         overlay.addEventListener('click', () => {
-            video.muted = false; // Примусово вмикаємо звук
-            video.play();
             overlay.style.display = 'none';
+        });
+
+        // Обробник кліку по кнопці в AR
+        ytButton.addEventListener('click', () => {
+            window.location.href = "https://www.youtube.com/shorts/d8QBGc3ZqC4";
         });
     </script>
 </body>
